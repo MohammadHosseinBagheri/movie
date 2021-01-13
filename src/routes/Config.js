@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Home from './Home/Home';
 import Profile from './Profile/Profile';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Description from './Description/Description';
 
 const TabBar = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -21,6 +22,11 @@ const HomeStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen component={Home} name="Home" options={options('Home')} />
+      <Stack.Screen
+        component={Description}
+        name="Description"
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };
