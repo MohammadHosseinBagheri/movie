@@ -6,82 +6,92 @@ import {
   Text,
   View,
   Dimensions,
-  ImageBackground,
   Image,
   TouchableOpacity,
 } from 'react-native';
+import {SharedElement} from 'react-navigation-shared-element';
 import {useGridState} from '../../context/grid/Grid.provider';
 import {useNavigation} from '@react-navigation/native';
+import {useGetMovieDetails} from '../../hooks';
 
 const {width, height} = Dimensions.get('window');
 const VideoCard = (props) => {
   const {item, index} = props;
   const gridStatus = useGridState();
   const navigation = useNavigation();
-
-  console.log(item);
+  console.log(item.id);
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate('Description', {item:item});
-      }}>
-      <View style={styles.videoContainer}>
-        {!gridStatus && (
-          <View style={styles.videoSideDetailsContainer}>
-            <View style={styles.videoSideDetailsHeader}>
-              <Text>{item.title}</Text>
-              <Text>
-                {item.release_date} | {item.original_language}
-              </Text>
-            </View>
-            <View>
-              <Text>
-                {item.vote_average}{' '}
-                {
-                  <Icon
-                    style={{fontSize: PixelRatio.getFontScale() * 19}}
-                    name="people-circle-outline"
-                  />
-                }{' '}
-              </Text>
-              <Text>
-                {item.vote_count}{' '}
-                {
-                  <Icon
-                    name="star-outline"
-                    style={{
-                      fontSize: PixelRatio.getFontScale() * 19,
-                      color: '#FFAB00',
-                    }}
-                  />
-                }{' '}
-              </Text>
-            </View>
+    <View style={styles.videoContainer}>
+      {!gridStatus && (
+        <View style={styles.videoSideDetailsContainer}>
+          <View style={styles.videoSideDetailsHeader}>
+            <Text>{item.title}</Text>
+            <Text>
+              {item.release_date} | {item.original_language}
+            </Text>
           </View>
-        )}
-        <ImageBackground
-          source={{
-            uri: `https://image.tmdb.org/t/p/original${item.poster_path}`,
-          }}
-          style={[
-            {
-              width: PixelRatio.getPixelSizeForLayoutSize(50),
+          <View>
+            <Text>
+              {item.vote_average}{' '}
+              {
+                <Icon
+                  style={{fontSize: PixelRatio.getFontScale() * 19}}
+                  name="people-circle-outline"
+                />
+              }{' '}
+            </Text>
+            <Text>
+              {item.vote_count}{' '}
+              {
+                <Icon
+                  name="star-outline"
+                  style={{
+                    fontSize: PixelRatio.getFontScale() * 19,
+                    color: '#FFAB00',
+                  }}
+                />
+              }{' '}
+            </Text>
+          </View>
+        </View>
+      )}
+      <TouchableOpacity
+        onPress={() => {
+          navigation.push('Description', {item: item});
+        }}>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            right: 0,
+            top: 0,
+            zIndex: 100,
+            width: 50,
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon style={{color: '#546E7A'}} name="heart" />
+        </TouchableOpacity>
+        <SharedElement id={`item.${item.id}.image`}>
+          <Image
+            resizeMode={'stretch'}
+            source={{
+              uri: `https://image.tmdb.org/t/p/original${item.poster_path}`,
+            }}
+            style={{
               justifyContent: 'space-between',
-              elevation: 2,
-            },
-          ]}
-          imageStyle={{
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-          }}
-          width={PixelRatio.getPixelSizeForLayoutSize(50)}
-          height={PixelRatio.getPixelSizeForLayoutSize(50)}>
-          <View style={{height: '100%'}}></View>
-        </ImageBackground>
-      </View>
-    </TouchableOpacity>
+              borderBottomLeftRadius: 30,
+              borderBottomRightRadius: 30,
+              borderTopLeftRadius: 30,
+              borderTopRightRadius: 30,
+              height: PixelRatio.getPixelSizeForLayoutSize(60),
+              width: PixelRatio.getPixelSizeForLayoutSize(50),
+              zIndex: 0,
+            }}
+          />
+        </SharedElement>
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -89,8 +99,8 @@ export default VideoCard;
 
 const styles = StyleSheet.create({
   videoContainer: {
-    marginVertical: 20,
-    height: (PixelRatio.get() * 10 * height) / 100,
+    marginVertical: 10,
+    // height: (PixelRatio.get() * 10 * height) / 100,
     display: 'flex',
     marginHorizontal: 5,
     justifyContent: 'flex-end',
