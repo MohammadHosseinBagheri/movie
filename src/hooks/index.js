@@ -1,8 +1,12 @@
 import {useQuery} from 'react-query';
 import * as apis from '../apis';
 
-const useGetAllMovies =  () => {
+const useGetAllMovies = () => {
   return useQuery('movies', apis.getAllMovies);
 };
 
-export {useGetAllMovies};
+const useGetMovieDetails = (id) => {
+  return useQuery(['movie', id], (_, id) => apis.getMovieDetails(id));
+};
+
+export {useGetAllMovies, useGetMovieDetails};
