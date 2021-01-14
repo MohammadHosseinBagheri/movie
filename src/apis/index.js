@@ -5,5 +5,10 @@ const getAllMovies = async () => {
   );
   return data;
 };
-
-export {getAllMovies};
+const getMovieDetails = async (id) => {
+  const {data} = await axios.get(
+    `https://api.themoviedb.org/3/movie/${id}?api_key=0c96b6d842a99f43674710b91c5d5c8c&language=en-US`,
+    );
+    return data;
+};
+export {getAllMovies, getMovieDetails};
