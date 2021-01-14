@@ -19,10 +19,13 @@
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-gesture-handler": "^1.9.0",
+    "react-native-modalbox": "^2.0.2",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-screens": "^2.16.1",
+    "react-native-shared-element": "^0.7.0",
     "react-native-vector-icons": "^7.1.0",
+    "react-navigation-shared-element": "^5.0.0-alpha1",
     "react-query": "^3.5.11"
   },
   "devDependencies": {
