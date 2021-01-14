@@ -1,14 +1,16 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createStackNavigator} from '@react-navigation/stack';
 import Home from './Home/Home';
 import Profile from './Profile/Profile';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Description from './Description/Description';
+import {enableScreens} from 'react-native-screens';
+import {createSharedElementStackNavigator} from 'react-navigation-shared-element';
+enableScreens();
 
 const TabBar = createBottomTabNavigator();
-const Stack = createStackNavigator();
+const Stack = createSharedElementStackNavigator();
 var options = (name) => () => ({
   title: name,
   headerStyle: {backgroundColor: '#EEEEEE'},
@@ -25,7 +27,19 @@ const HomeStack = () => {
       <Stack.Screen
         component={Description}
         name="Description"
-        options={{headerShown: false}}
+        options={() => ({
+          headerShown: false,
+          gestureEnabled: false,
+          transitionSpec: {
+            open: {animation: 'timing', config: {duration: 1000}},
+            close: {animation: 'timing', config: {duration: 1000}},
+          },
+          cardStyleInterpolator: ({current: {progress}}) => ({
+            cardStyle: {
+              opacity: progress,
+            },
+          }),
+        })}
       />
     </Stack.Navigator>
   );
