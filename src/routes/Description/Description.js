@@ -1,5 +1,3 @@
-import {useNavigation} from '@react-navigation/native';
-import {Icon} from 'native-base';
 import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
@@ -16,16 +14,24 @@ import {getMovieDetails} from '../../apis';
 import LoadingSpinner from '../../components/Loading/LoadingSpinner';
 import {useGetAllMovies, useGetMovieDetails} from '../../hooks';
 import {getMoviesCache} from '../../hooks/react--query';
+import * as Animatable from 'react-native-animatable';
+import MySharedElement from '../../components/SharedElement/MySharedElement';
+import BackRouteButton from '../../components/BackRouteButton/BackRouteButton';
+import ContentVideoDescription from '../../components/Description/ContentVideoDescription';
+import CompanyDetail from '../../components/Description/CompanyDetail';
+const AnimationScrollView = Animatable.createAnimatableComponent(ScrollView);
+const animationa = {
+  0: {opacity: 0, translateX: 50},
+  1: {opacity: 1, translateX: 0},
+};
 const {width, height} = Dimensions.get('window');
 const Description = (props) => {
-  const [isLimitLine, setLimitLine] = useState(true);
   const {
     route: {
       params: {item},
     },
   } = props;
   const id = item.id;
-  const navigation = useNavigation();
   const [detail, setDetail] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
@@ -42,12 +48,10 @@ const Description = (props) => {
     };
     getDetails(id);
   }, []);
-  const handlePress = () => {
-    setLimitLine((prevState) => !prevState);
-  };
+
   return (
     <>
-      <SharedElement id={`item.${item.id}.image`}>
+      <MySharedElement id={`item.${item.id}.image`}>
         <Image
           resizeMode={'stretch'}
           style={styles.descriptionImage}
@@ -55,67 +59,32 @@ const Description = (props) => {
             uri: `https://image.tmdb.org/t/p/original${item.poster_path}`,
           }}
         />
-      </SharedElement>
-      <TouchableOpacity
-        style={{position: 'absolute', left: 5, top: 0}}
-        onPress={() => navigation.goBack()}>
-        <Icon name="arrow-back-outline" style={{color: '#455A64'}} />
-      </TouchableOpacity>
-      <ScrollView showsVerticalScrollIndicator={false} style={styles.descriptionDetailsContainer}>
-        <View style={styles.descriptionTitleContainer}>
-          <Text style={styles.descriptionTitleText}>2h 3m</Text>
-          <Text style={styles.descriptionTitleText}>Adventure / Crime</Text>
-          <Text style={styles.descriptionTitleText}>
-            {item.original_language}
-          </Text>
-        </View>
-        <View style={styles.descriptionSynopsisContainer}>
-          <Text style={styles.descriptionTitleText}>Synopsis</Text>
-          <Text
-            numberOfLines={isLimitLine ? 2 : 20}
-            style={[styles.descriptionTitleText, {fontWeight: '100'}]}>
-            {item.overview}
-          </Text>
-          <TouchableOpacity
-            onPress={handlePress}
-            style={{position: 'absolute', bottom: 0, right: 0}}>
-            <Text style={{color: '#c62828'}}>
-              {isLimitLine ? 'Read More' : 'See Less'}
-            </Text>
-          </TouchableOpacity>
-        </View>
+      </MySharedElement>
+      <BackRouteButton />
+      <AnimationScrollView
+        animation={animationa}
+        delay={300}
+        useNativeDriver
+        showsVerticalScrollIndicator={false}
+        style={styles.descriptionDetailsContainer}>
+        <ContentVideoDescription item={item} />
         {isLoading && <LoadingSpinner />}
         {detail && (
-          <ScrollView
+          <AnimationScrollView
             showsHorizontalScrollIndicator={false}
             horizontal
+            useNativeDriver
+            animation={animationa}
+            delay={450}
             snapToInterval={100}
-            contentContainerStyle={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginVertical: 30,
-            }}
+            contentContainerStyle={styles.animationScrollViewContentContainer}
             pagingEnabled>
             {detail?.production_companies?.map((company) => (
-              <View
-                style={{
-                  marginHorizontal: 50,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Image
-                  source={{
-                    uri: `https://image.tmdb.org/t/p/original${company.logo_path}`,
-                  }}
-                  resizeMode={'stretch'}
-                  style={{width: 50, height: 50}}
-                />
-                <Text style={styles.descriptionTitleText} >{company.name}</Text>
-              </View>
+              <CompanyDetail company={company} />
             ))}
-          </ScrollView>
+          </AnimationScrollView>
         )}
-      </ScrollView>
+      </AnimationScrollView>
     </>
   );
 };
@@ -136,19 +105,9 @@ const styles = StyleSheet.create({
     width,
     height: height * 0.44,
   },
-  descriptionTitleContainer: {
-    flexGrow: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-  },
-  descriptionTitleText: {
-    fontWeight: 'bold',
-    fontSize: 14,
-    color: '#455A64',
-    textAlign: 'justify',
-  },
-  descriptionSynopsisContainer: {
-    paddingVertical: 20,
+  animationScrollViewContentContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 30,
   },
 });
