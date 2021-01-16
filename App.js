@@ -3,6 +3,7 @@ import {View, Text} from 'react-native';
 import ConfigRoutes from './src/routes/Config';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import GridProvider from './src/context/grid/Grid.provider';
+import FavoriteMovieProvider from './src/context/favorite/Favorid.provider';
 const App = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -14,9 +15,11 @@ const App = () => {
   });
   return (
     <QueryClientProvider client={queryClient}>
-      <GridProvider>
-        <ConfigRoutes />
-      </GridProvider>
+      <FavoriteMovieProvider>
+        <GridProvider>
+          <ConfigRoutes />
+        </GridProvider>
+      </FavoriteMovieProvider>
     </QueryClientProvider>
   );
 };
